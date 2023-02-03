@@ -1,19 +1,21 @@
 #!/bin/bash
-
-# Terminate already running bar instances
 killall -q polybar
-# If all your bars have ipc enabled, you can also use
-# polybar-msg cmd quit
 
-# Launch Polybar, using default config location ~/.config/polybar/config.ini
-polybar main 2>&1 | tee -a /tmp/polybar.log & disown
+# if [[ "$style" == "hack" || "$style" == "cuts" ]]; then
+# 	polybar -q top -c "$dir/$style/config.ini" &
+# 	polybar -q bottom -c "$dir/$style/config.ini" &
 
+# elif [[ "$style" == "pwidgets" ]]; then
+# 	bash "$dir"/pwidgets/launch.sh --main
 
-if type "xrandr"; then
-  for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
-   	MONITOR=$m polybar main | tee -a /tmp/polybar.log & disown
-  done
-else
-  polybar main 2>&1 | tee -a /tmp/polybar.log & disown
-fi
-echo "Polybar launched..."
+# else
+	if type "xrandr"; then
+	  for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
+	    # MONITOR=$m polybar -q main -c "$dir/$style/config.ini" & disown
+		MONITOR=$m polybar -q main |tee /tmp/polybar.log & disown
+	  done
+	else
+	 polybar -q main |tee /tmp/polybar.log & disown
+	fi
+	#polybar -q main -c "$dir/$style/config.ini" &	
+# fi
